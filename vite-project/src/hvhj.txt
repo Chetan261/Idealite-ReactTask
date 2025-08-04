@@ -1,0 +1,102 @@
+import React, { useState } from 'react';
+import { Box, Tabs, Tab, IconButton } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CloseIcon from '@mui/icons-material/Close';
+import ClaimsOptionCard from './components/ClaimsOptionCard';
+import defaultOptions from './data/defaultOptions.json';
+
+function getNewOption(idx) {
+  return {
+    label: `Option ${idx + 1}`,
+    familyDefinition: "EMP",
+    employees: "",
+    dependents: "",
+    totalLives: "",
+    sumInsured: 200000,
+    sumInsuredOption: "option",
+    comments: "",
+  };
+}
+
+export default function App() {
+  const [options, setOptions] = useState(defaultOptions);
+  const [selected, setSelected] = useState(0);
+
+  const handleOptionChange = (idx, updated) => {
+    setOptions(opts => opts.map((opt, i) => i === idx ? updated : opt));
+  };
+
+  const handleClone = (idx) => {
+    setOptions(opts => [
+      ...opts.slice(0, idx + 1),
+      { ...opts[idx], label: `Option ${opts.length + 1}` },
+      ...opts.slice(idx + 1),
+    ]);
+    setSelected(idx + 1);
+  };
+
+  const handleDelete = (idx) => {
+    if (options.length > 1) {
+      setOptions(opts => opts.filter((_, i) => i !== idx));
+      setSelected(prev => prev === idx ? 0 : prev > idx ? prev - 1 : prev);
+    }
+  };
+
+  return (
+    <Box sx={{ width: "100%", typography: "body1" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={selected}
+          onChange={(e, val) => setSelected(val)}
+          TabIndicatorProps={{ style: { display: 'none' } }}
+          sx={{ minHeight: 42 }}
+        >
+          {options.map((opt, idx) => (
+            <Tab
+              key={idx}
+              label={opt.label}
+              icon={
+                <IconButton
+                  size="small"
+                  onClick={e => { e.stopPropagation(); handleClone(idx); }}
+                >
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              }
+              iconPosition="end"
+              onDoubleClick={e => e.stopPropagation()}
+              onClick={() => setSelected(idx)}
+              onContextMenu={e => e.preventDefault()}
+              sx={{
+                bgcolor: selected === idx ? "#fff" : "#207cff",
+                color: selected === idx ? "#207cff" : "#fff",
+                fontWeight: 700,
+                borderRadius: "10px 10px 0 0",
+                minWidth: 140,
+                mx: 0.5,
+                px: 2,
+                minHeight: 42,
+                textTransform: "none",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+              iconLabel={"clone-button"}
+            >
+            </Tab>
+          ))}
+        </Tabs>
+      </Box>
+
+      {/* Show only the selected card */}
+      {options[selected] && (
+        <ClaimsOptionCard
+          option={options[selected]}
+          onChange={up => handleOptionChange(selected, up)}
+          onDelete={() => handleDelete(selected)}
+          showDelete={options.length > 1 && options[selected].label !== 'Expiring Terms'}
+        />
+      )}
+    </Box>
+  );
+}

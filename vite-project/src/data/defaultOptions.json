@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "label": "Expiring Terms",
+    "familyDefinition": "EMP",
+    "employees": 100,
+    "dependents": 100,
+    "totalLives": 200,
+    "sumInsuredType": "radio",
+    "selectedSumInsured": "200000",
+    "manualAmount": "",
+    "comments": ""
+  },
+  {
+    "id": 2,
+    "label": "Option 1",
+    "familyDefinition": "EMP",
+    "employees": 100,
+    "dependents": 100,
+    "totalLives": 200,
+    "sumInsuredType": "radio",
+    "selectedSumInsured": "300000",
+    "manualAmount": "",
+    "comments": ""
+  }
+]
